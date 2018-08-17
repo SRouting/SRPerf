@@ -11,6 +11,70 @@ from time import sleep
 sys.path.insert(0, "/opt/trex-core-2.41/scripts/automation/trex_control_plane/stl/")
 from trex_stl_lib.api import *
 
+class TrexOutput():
+    
+    def __init__(self):
+        # We use a dictionary to represent (internally) the TrexOutput 'class'. 
+        self.output = {}
+        
+        self.output['tx'] = {}
+        self.output['rx'] = {}
+        self.output['tx']['port'] = -1
+        self.output['tx']['total_packets'] = -1
+        self.output['tx']['duration'] = -1
+        self.output['tx']['requested_tx_rate'] = -1
+        
+        self.output['rx']['port'] = -1
+        self.output['rx']['total_packets'] = -1
+        self.output['warnings'] = None
+        
+    def setTxPort(self, txPort):
+        self.output['tx']['port'] = txPort
+    
+    def setRxPort(self, rxPort):
+        self.output['rx']['port'] = rxPort
+
+    def setTxTotalPackets(self, tPackets):
+        self.output['tx']['total_packets'] = tPackets
+        
+    def setRxTotalPackets(self, tPackets):
+        self.output['rx']['total_packets'] = tPackets
+        
+    def setTxDuration(self, duration):
+        self.output['tx']['duration'] = duration
+        
+    def setRequestedTxRate(self, rate):   
+        self.output['tx']['requested_tx_rate'] = rate
+        
+    def setWarnings(self, warn):
+        self.output['warnings'] = warn
+        
+    def getTxPort(self):
+        return self.output['tx']['port']
+    
+    def getRxPort(self, rxPort):
+        return self.output['rx']['port']
+
+    def getTxTotalPackets(self):
+        return self.output['tx']['total_packets']
+        
+    def getRxTotalPackets(self):
+        return self.output['rx']['total_packets']
+    
+    def getTxDuration(self):
+        return self.output['tx']['duration']
+    
+    def getRequestedTxRate(self):   
+        return self.output['tx']['requested_tx_rate'] 
+    
+    def getWarnings(self):
+        return self.output['warnings']
+    
+    def toDictionary(self):
+        return self.output
+    
+    def toString(self):
+        return str(self.output)
 
 class TrexDriver():
     
@@ -45,14 +109,11 @@ class TrexDriver():
     #     +--warnings
     #
     def run(self):
-        output = {}
-        output['tx'] = {}
-        output['rx'] = {}
-        output['tx']['port'] = self.txPort
-        output['tx']['total_packets'] = 0
-        output['rx']['port'] = self.rxPort
-        output['rx']['total_packets'] = 0
-        output['warnings'] = None
+        tOutput = TrexOutput()
+        tOutput.setTxPort(self.txPort)
+        tOutput.setRxPort(self.rxPort)
+        tOutput.setRequestedTxRate(self.rate)
+        tOutput.setTxDuration(self.duration)
         
         # We create the client
         client = STLClient(server=self.server)
@@ -92,8 +153,9 @@ class TrexDriver():
             
             # We store warnings inside the dictionary in order to allow them
             # to be accessed afterwards
-            if client.get_warnings():
-                output['warnings'] = client.get_warnings()
+            warn = client.get_warnings()
+            if warn:
+                tOutput.setWarnings(warn)
             
             # We wait for a bit in order to let the counters be stable
             sleep(1)
@@ -102,8 +164,8 @@ class TrexDriver():
             txStats = client.get_xstats(self.txPort)
             rxStats = client.get_xstats(self.rxPort)
             
-            output['tx']['total_packets'] = txStats['tx_total_packets']
-            output['rx']['total_packets'] = rxStats['rx_total_packets']
+            tOutput.setTxTotalPackets(txStats['tx_total_packets'])
+            tOutput.setRxTotalPackets(rxStats['rx_total_packets'])
           
         except STLError as e:
             print(e)
@@ -112,13 +174,13 @@ class TrexDriver():
         finally:
             client.disconnect()
         
-        return output
+        return tOutput
 
     
 # Entry point used for testing
 if __name__ == '__main__':
     
-    driver = TrexDriver('127.0.0.1', 0, 1, 'pcap/raw-pcap-files/plain-ipv6-64.pcap', '5kpps', 10)
+    driver = TrexDriver('127.0.0.1', 0, 1, 'pcap/raw-pcap-files/plain-ipv6-64.pcap', '5000', 10)
     output = driver.run()
-    print(output) 
+    print(output.toString())
     
