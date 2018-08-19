@@ -3,6 +3,7 @@
 import numpy as np
 
 from TrexDriver import *
+from Experiment import Experiment
 
 class TrexPerfOutput():
     
@@ -159,19 +160,42 @@ class TrexPerfDriver():
 
         return output
     
+    
+#Experiment for Trex
+class TrexExperiment(Experiment):
+    
+    def __init__(self, server, txPort, rxPort, pcap, rate, repetitions, duration):
+        self.perfDriver = TrexPerfDriver(server, txPort, rxPort, pcap, rate, 
+                                         repetitions, duration)
+        self.invoked = False
+        
+    def run(self, *args):
+        if self.invoked:
+            raise ExperimentException('Experiment already executed, please create another one')
+            
+        # Once the Experiment has been performed it cannot be used anymore
+        self.invoked = True
+        
+        output = self.perfDriver.run()
+        return output
+    
 # Entry point used for testing
 if __name__ == '__main__':
-    perfDriver = TrexPerfDriver('127.0.0.1', 0,
+    expriment = TrexExperiment('127.0.0.1', 0,
                                 1, 'pcap/raw-pcap-files/plain-ipv6-64.pcap',
                                 '1000000', 5, 10)
     print ('Running ...')
     
-    trexPerfOutput = perfDriver.run()
-    rrate = trexPerfOutput.getTrexOutput()[0]
+    output = expriment.run()
+    if output is None:
+        print('Error, experiment cannot return an empty value.')
+        sys.exit(1)
     
-    print('RRate {0}, Mean {1}, Std. {2}'.format(rrate.getRequestedTxRate(), 
-                                                 trexPerfOutput.getAverageDL(), 
-                                                 trexPerfOutput.getStdDL()))
+    rrate = output.getTrexOutput()[0]
+    
+    print('Requested TxRate {0}, Mean {1}, Std. {2}'.format(rrate.getRequestedTxRate(), 
+                                                 output.getAverageDL(), 
+                                                 output.getStdDL()))
     
     print ('Completed ...')
             
