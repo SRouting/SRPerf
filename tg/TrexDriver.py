@@ -9,6 +9,7 @@ from time import sleep
 
 # get TRex APIs.
 sys.path.insert(0, "/opt/trex-core-2.41/scripts/automation/trex_control_plane/stl/")
+
 from trex_stl_lib.api import *
 
 class TrexOutput():
@@ -17,6 +18,21 @@ class TrexOutput():
         # We use a dictionary to represent (internally) the TrexOutput 'class'. 
         self.output = {}
         
+        # We create and return a dictionary used to store results of the run.
+        # The dictionary is composed by:
+        # 
+        # dictionary 
+        #     |
+        #     +--tx
+        #     |   +--port
+        #     |   +--total_packets
+        #     |
+        #     +--rx
+        #     |   +--port
+        #     |   +--total_packets
+        #     |
+        #     +--warnings
+        #
         self.output['tx'] = {}
         self.output['rx'] = {}
         self.output['tx']['port'] = -1
@@ -64,7 +80,7 @@ class TrexOutput():
     def getTxDuration(self):
         return self.output['tx']['duration']
     
-    def getRequestedTxRate(self):   
+    def getRequestedTxRate(self):
         return self.output['tx']['requested_tx_rate'] 
     
     def getWarnings(self):
@@ -92,22 +108,7 @@ class TrexDriver():
     def __buildStreamsFromPcap(self):
             return [STLStream(packet=STLPktBuilder(pkt=self.pcap),
                               mode=STLTXCont())]
-        
-    # We create and return a dictionary used to store results of the run.
-    # The dictionary is composed by:
-    # 
-    # dictionary 
-    #     |
-    #     +--tx
-    #     |   +--port
-    #     |   +--total_packets
-    #     |
-    #     +--rx
-    #     |   +--port
-    #     |   +--total_packets
-    #     |
-    #     +--warnings
-    #
+    
     def run(self):
         tOutput = TrexOutput()
         tOutput.setTxPort(self.txPort)

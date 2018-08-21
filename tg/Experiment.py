@@ -13,6 +13,34 @@ class Experiment():
     @abstractmethod
     def run(self, *args):
         pass
+
+# Factory for Experiment.
+# Every Experiment should define its own factory method (and class).
+class ExperimentFactory():
+    __metaclass__ = ABCMeta
+    
+    @abstractmethod
+    def build(self, *args):
+        pass
+    
+class ExperimentOutput():
+    __metaclass__ = ABCMeta
+    
+    @abstractmethod
+    def getRequestedTxRate(self):
+        pass
+    
+    @abstractmethod
+    def getAverageDL(self):
+        pass
+    
+    @abstractmethod
+    def getStdDL(self):
+        pass
+    
+    @abstractmethod
+    def toString(self):
+        pass
     
 class ExperimentException(Exception):
     

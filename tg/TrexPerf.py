@@ -3,20 +3,24 @@
 import numpy as np
 
 from TrexDriver import *
-from Experiment import Experiment
+from Experiment import *
 
-class TrexPerfOutput():
+class TrexPerfOutput(ExperimentOutput):
     
-    def __init__(self, runs, mean, std):
+    def __init__(self, runs, reqRate, mean, std):
         self.output = {}
         
         self.output['dl_mean'] = mean
         self.output['dl_std'] = std
+        self.output['requested_tx_rate'] = reqRate
         
         self.runs = runs
         
     def getTrexOutput(self):
         return self.runs
+    
+    def getRequestedTxRate(self):
+        return self.output['requested_tx_rate']
     
     def getAverageDL(self):
         return self.output['dl_mean']
@@ -77,7 +81,8 @@ class TrexPerfDriver():
                 # We skip the warm-up run which is the first one (0).
                 results.append(output)
             else:
-                print('Warm-up run skipped, it will not be considered in results.')
+                #print('Warm-up run skipped, it will not be considered in results.')
+                pass
     
         # We return the results array in which we have stored the result of each
         # single test run.
@@ -88,6 +93,9 @@ class TrexPerfDriver():
         # performed runs and aggregate measurements such as mean of DL and also
         # the std. 
         output = None
+        
+        #Requested tx rate is always the same for every run in the experiment.
+        txRate = -1
         
         # We create a numpy array in order to store checked and validate data
         dlRuns = np.array([])
@@ -125,7 +133,13 @@ class TrexPerfDriver():
                 
                 # We evaluate DL
                 dl = rxTotalPackets / (1.0 * txTotalPackets)
-                dlRuns = np.append(dlRuns, dl)    
+                dlRuns = np.append(dlRuns, dl)
+                
+                # We set the requested tx rate only the first time (using the first
+                # run in the experiment; following runs will have the same 
+                # requested tx rate.
+                if txRate < 0:
+                    txRate = run.getRequestedTxRate()
         
         # End of for
     
@@ -138,10 +152,14 @@ class TrexPerfDriver():
     
         # We evaluate mean and std of delivery ratios
         dlMean = np.mean(dlRuns)
-        dlStd = np.std(dlRuns, ddof=1)
+        
+        if 1 < dlRuns.size: 
+            dlStd = np.std(dlRuns, ddof=1)
+        else:
+            dlStd = 0
         
         # We build the object wrapper
-        output = TrexPerfOutput(results, dlMean, dlStd)
+        output = TrexPerfOutput(results, txRate, dlMean, dlStd)
         
         return output
         
@@ -165,6 +183,8 @@ class TrexPerfDriver():
 class TrexExperiment(Experiment):
     
     def __init__(self, server, txPort, rxPort, pcap, rate, repetitions, duration):
+        super(Experiment, self).__init__()
+        
         self.perfDriver = TrexPerfDriver(server, txPort, rxPort, pcap, rate, 
                                          repetitions, duration)
         self.invoked = False
@@ -179,21 +199,40 @@ class TrexExperiment(Experiment):
         output = self.perfDriver.run()
         return output
     
+# Experiment Factory for Trex
+class TrexExperimentFactory(ExperimentFactory):
+    
+    def __init__(self, server, txPort, rxPort, pcap, repetitions, duration):
+        super(ExperimentFactory, self).__init__()
+        
+        self.server = server
+        self.txPort = txPort
+        self.rxPort = rxPort
+        self.pcap = pcap
+        
+        self.repetitions = repetitions
+        self.duration = duration
+        
+    def build(self, txRate):
+        return TrexExperiment(self.server, self.txPort, self.rxPort, self.pcap,
+                              txRate, self.repetitions, self.duration)
+        
+    
 # Entry point used for testing
 if __name__ == '__main__':
-    expriment = TrexExperiment('127.0.0.1', 0,
-                                1, 'pcap/raw-pcap-files/plain-ipv6-64.pcap',
-                                '1000000', 5, 10)
+    factory = TrexExperimentFactory('127.0.0.1', 0, 1, 
+                                    'pcap/raw-pcap-files/plain-ipv6-64.pcap', 
+                                    5, 10)
     print ('Running ...')
     
-    output = expriment.run()
+    experiment = factory.build('1000000')
+    output = experiment.run()
     if output is None:
         print('Error, experiment cannot return an empty value.')
         sys.exit(1)
     
-    rrate = output.getTrexOutput()[0]
-    
-    print('Requested TxRate {0}, Mean {1}, Std. {2}'.format(rrate.getRequestedTxRate(), 
+    print('Requested Tx Rate {0}, Mean {1}, Std. {2}'.format(
+                                                 output.getRequestedTxRate(), 
                                                  output.getAverageDL(), 
                                                  output.getStdDL()))
     
