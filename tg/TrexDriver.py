@@ -180,8 +180,7 @@ class TrexDriver():
     
 # Entry point used for testing
 if __name__ == '__main__':
-    
-    driver = TrexDriver('127.0.0.1', 0, 1, 'pcap/raw-pcap-files/plain-ipv6-64.pcap', '5000', 10)
+
+    driver = TrexDriver('127.0.0.1', 0, 1, 'pcap/trex-pcap-files/plain-ipv6-64.pcap', '100%', 10)
     output = driver.run()
     print(output.toString())
-    
