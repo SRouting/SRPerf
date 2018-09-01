@@ -1,0 +1,12 @@
+The list of tools needs to be installed on the SUT 
+1- SREXT
+2- ethtool (latest)
+3- iproute2 (min v4.14) 
+4- SR-tcpdump
+
+The list of required configuration 
+1- disable Hyper-threading 
+2- disable irqbalance
+3- disable NIC offloading features
+
+
