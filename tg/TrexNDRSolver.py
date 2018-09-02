@@ -16,12 +16,26 @@ if __name__ == '__main__':
         # 10 is how long a run should last (is expressed in seconds)
         factory = TrexExperimentFactory('127.0.0.1', 0, 1, 
                                     'pcap/raw-pcap-files/plain-ipv6-64.pcap', 
-                                    2, 10)
+                                    1, 10)
         # NoDropDelivey ratio
         # Parameters are:
         #
-        # 800000.0 starting tx rate
-        # 1000.0 (in pps) width of NDR searching window (used in the log search and linear phase)
+        # 100000.0 starting tx rate
+        # 500.0 (in pps) width of NDR searching window (used in the log search and linear phase)
         # 0.995 is the NDR
-        ndr = NoDropRateSolver(800000.0, 500.0, 0.995, factory)
+        ndr = NoDropRateSolver(100000.0, 500.0, 0.995, factory)
         ndr.solve()
+        
+        # If no SW has been found, it returns None; otherwise it returns a tuple,
+        # whose values are:
+        #    position 0: SW's lower bound
+        #    position 1: SW's delivery ratio for lower bound
+        #    position 2: SW's upper bound
+        #    position 3: SW's delivery ratio for upper bound
+        #    position 4,5,6: ancillary data. For further information please look at
+        #                    function expSearch() and logSearch().
+        sw = ndr.getSW()
+        
+        print '---------- Result ------------'
+        print sw
+        print '---------- Result ------------'
