@@ -1,13 +1,13 @@
 #!/usr/bin/python
 
+import yaml
 from optparse import OptionParser
 
-CONFIG_FILE = "config.txt"
+CONFIG_FILE = "config.yaml"
 
 def generate_config(configs=[]):
   with open(CONFIG_FILE, 'w') as outfile:
-    for config in configs:
-      outfile.write(config)
+    outfile.write(yaml.dump(configs, default_flow_style=False))
 
 # Generate config for all tests
 def generate_all():
@@ -22,14 +22,14 @@ def generate_all():
 # Generate config for plain tests
 def generate_plain(generate=True):
   configs = [
-  "plain\tipv6\tmax\tpdr\n",
-  "plain\tipv6\tmax\tmrr\n",
-  "plain\tipv6\tmin\tpdr\n",
-  "plain\tipv6\tmin\tmrr\n",
-  "plain\tipv4\tmax\tpdr\n",
-  "plain\tipv4\tmax\tmrr\n",
-  "plain\tipv4\tmin\tpdr\n",
-  "plain\tipv4\tmin\tmrr\n"
+    {'type': 'plain', 'experiment': 'ipv6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'plain', 'experiment': 'ipv6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'plain', 'experiment': 'ipv6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'plain', 'experiment': 'ipv6', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'plain', 'experiment': 'ipv4', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'plain', 'experiment': 'ipv4', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'plain', 'experiment': 'ipv4', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'plain', 'experiment': 'ipv4', 'size': 'min', 'rate': 'mrr', 'run': 1}
   ]
   if not generate:
     return configs
@@ -39,22 +39,22 @@ def generate_plain(generate=True):
 # Generate config for transit tests
 def generate_transit(generate=True):
   configs = [
-  "srv6\tt_encaps_v6\tmax\tpdr\n",
-  "srv6\tt_encaps_v6\tmax\tmrr\n",
-  "srv6\tt_encaps_v6\tmin\tpdr\n",
-  "srv6\tt_encaps_v6\tmin\tmrr\n",
-  "srv6\tt_encaps_v4\tmax\tpdr\n",
-  "srv6\tt_encaps_v4\tmax\tmrr\n",
-  "srv6\tt_encaps_v4\tmin\tpdr\n",
-  "srv6\tt_encaps_v4\tmin\tmrr\n",
-  "srv6\tt_encaps_l2\tmax\tpdr\n",
-  "srv6\tt_encaps_l2\tmax\tmrr\n",
-  "srv6\tt_encaps_l2\tmin\tpdr\n",
-  "srv6\tt_encaps_l2\tmin\tmrr\n",
-  "srv6\tt_insert_v6\tmax\tpdr\n",
-  "srv6\tt_insert_v6\tmax\tmrr\n",
-  "srv6\tt_insert_v6\tmin\tpdr\n",
-  "srv6\tt_insert_v6\tmin\tmrr\n"
+    {'type': 'srv6', 'experiment': 't_encaps_v6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_v6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_encaps_v6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_v6', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_encaps_v4', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_v4', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_encaps_v4', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_v4', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_encaps_l2', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_l2', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_encaps_l2', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_encaps_l2', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_insert_v6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_insert_v6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 't_insert_v6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 't_insert_v6', 'size': 'min', 'rate': 'mrr', 'run': 1}
   ]
   if not generate:
     return configs
@@ -64,42 +64,42 @@ def generate_transit(generate=True):
 # Generate config for end tests
 def generate_end(generate=True):
   configs = [
-  "srv6\tend\tmax\tpdr\n",
-  "srv6\tend\tmax\tmrr\n",
-  "srv6\tend\tmin\tpdr\n",
-  "srv6\tend\tmin\tmrr\n",
-  "srv6\tend_x\tmax\tpdr\n",
-  "srv6\tend_x\tmax\tmrr\n",
-  "srv6\tend_x\tmin\tpdr\n",
-  "srv6\tend_x\tmin\tmrr\n",
-  "srv6\tend_t\tmax\tpdr\n",
-  "srv6\tend_t\tmax\tmrr\n",
-  "srv6\tend_t\tmin\tpdr\n",
-  "srv6\tend_t\tmin\tmrr\n",
-  "srv6\tend_b6\tmax\tpdr\n",
-  "srv6\tend_b6\tmax\tmrr\n",
-  "srv6\tend_b6\tmin\tpdr\n",
-  "srv6\tend_b6\tmin\tmrr\n",
-  "srv6\tend_b6_encaps\tmax\tpdr\n",
-  "srv6\tend_b6_encaps\tmax\tmrr\n",
-  "srv6\tend_b6_encaps\tmin\tpdr\n",
-  "srv6\tend_b6_encaps\tmin\tmrr\n",
-  "srv6\tend_dx6\tmax\tpdr\n",
-  "srv6\tend_dx6\tmax\tmrr\n",
-  "srv6\tend_dx6\tmin\tpdr\n",
-  "srv6\tend_dx6\tmin\tmrr\n",
-  "srv6\tend_dx4\tmax\tpdr\n",
-  "srv6\tend_dx4\tmax\tmrr\n",
-  "srv6\tend_dx4\tmin\tpdr\n",
-  "srv6\tend_dx4\tmin\tmrr\n",
-  "srv6\tend_dx2\tmax\tpdr\n",
-  "srv6\tend_dx2\tmax\tmrr\n",
-  "srv6\tend_dx2\tmin\tpdr\n",
-  "srv6\tend_dx2\tmin\tmrr\n",
-  "srv6\tend_dt6\tmax\tpdr\n",
-  "srv6\tend_dt6\tmax\tmrr\n",
-  "srv6\tend_dt6\tmin\tpdr\n",
-  "srv6\tend_dt6\tmin\tmrr\n",
+    {'type': 'srv6', 'experiment': 'end', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_x', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_x', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_x', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_x', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_t', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_t', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_t', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_t', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_b6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_b6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_b6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_b6', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_b6_encaps', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_b6_encaps', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_b6_encaps', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_b6_encaps', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx6', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx4', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx4', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx4', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx4', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx2', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx2', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dx2', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dx2', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dt6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dt6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_dt6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_dt6', 'size': 'min', 'rate': 'mrr', 'run': 1}
   ]
   if not generate:
     return configs
@@ -109,18 +109,18 @@ def generate_end(generate=True):
 # Generate config for proxy tests
 def generate_proxy(generate=True):
   configs = [
-  "srv6\tend_ad6\tmax\tpdr\n",
-  "srv6\tend_ad6\tmax\tmrr\n",
-  "srv6\tend_ad6\tmin\tpdr\n",
-  "srv6\tend_ad6\tmin\tmrr\n",
-  "srv6\tend_ad4\tmax\tpdr\n",
-  "srv6\tend_ad4\tmax\tmrr\n",
-  "srv6\tend_ad4\tmin\tpdr\n",
-  "srv6\tend_ad4\tmin\tmrr\n",
-  "srv6\tend_am\tmax\tpdr\n",
-  "srv6\tend_am\tmax\tmrr\n",
-  "srv6\tend_am\tmin\tpdr\n",
-  "srv6\tend_am\tmin\tmrr\n"
+    {'type': 'srv6', 'experiment': 'end_ad6', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_ad6', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_ad6', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_ad6', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_ad4', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_ad4', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_ad4', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_ad4', 'size': 'min', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_am', 'size': 'max', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_am', 'size': 'max', 'rate': 'mrr', 'run': 1},
+    {'type': 'srv6', 'experiment': 'end_am', 'size': 'min', 'rate': 'pdr', 'run': 10},
+    {'type': 'srv6', 'experiment': 'end_am', 'size': 'min', 'rate': 'mrr', 'run': 1}
   ]
   if not generate:
     return configs

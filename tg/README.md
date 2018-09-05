@@ -4,16 +4,57 @@ This folder contains all TG scripts for the Linux SRv6 performance experiment
 
 ### Generation of the config file ###
 
-Config file can be manually generated using this convention. Config file can contain multiple lines, each one will be a different test to perform:
+Config file can be manually generated using yaml convention. Config file can contain multiple yaml sequences, each one will be a different test to perform:
 
-	type\texperiment\tsize\trate\n
+    - experiment: ipv6
+      rate: pdr
+      run: 10
+      size: max
+      type: plain
 
 For example:
 
-	srv6	end	max	pdr
-	srv6	end	max	mrr
-	srv6	end	min	pdr
-	srv6	end	min	mrr
+    - experiment: ipv6
+      rate: pdr
+      run: 10
+      size: max
+      type: plain
+    - experiment: ipv6
+      rate: mrr
+      run: 1
+      size: max
+      type: plain
+    - experiment: ipv6
+      rate: pdr
+      run: 10
+      size: min
+      type: plain
+    - experiment: ipv6
+      rate: mrr
+      run: 1
+      size: min
+      type: plain
+    - experiment: ipv4
+      rate: pdr
+      run: 10
+      size: max
+      type: plain
+    - experiment: ipv4
+      rate: mrr
+      run: 1
+      size: max
+      type: plain
+    - experiment: ipv4
+      rate: pdr
+      run: 10
+      size: min
+      type: plain
+    - experiment: ipv4
+      rate: mrr
+      run: 1
+      size: min
+      type: plain
+
 
 Otherwise, it is possible to use the ***config_generator.py*** utility to automatically generate a configuration file:
 

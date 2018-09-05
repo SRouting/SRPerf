@@ -2,12 +2,12 @@
 
 import os
 import sys
+import yaml
 
 from collections import namedtuple
 
 # Config utilities
-Config = namedtuple("Config", ["type", "experiment", "size", "rate"])
-FILE = "config.txt"
+Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run"])
 
 # Parser of the configuration
 class ConfigParser(object):
@@ -27,24 +27,22 @@ class ConfigParser(object):
   # Parse Function, load lines from file and parses one by one
   def parse_data(self, config_file):
     with open(config_file) as f:
-      for line in f:
-        chunks = line.split("\n")[0].split("\t")
-        self.configs.append(Config(type=chunks[0], experiment=chunks[1],
-          size=chunks[2], rate=chunks[3]))
+      configs = yaml.load(f)
+    for config in configs:
+      self.configs.append(Config(type=config['type'], experiment=config['experiment'],
+                                  size=config['size'], rate=config['rate'], run=config['run']))
 
   # Configs getter
   def get_configs(self):
     return self.configs
 
-  # Test getter
+  # Packet getter
   @staticmethod
-  def get_test(config):
+  def get_packet(config):
     return "%s-%s-%s" %(config.type, config.experiment,
       ConfigParser.MAPPINGS[config.size])
 
-if __name__ == '__main__':
-  parser = ConfigParser(FILE)
-  for config in parser.get_configs():
-    print config, ConfigParser.get_test(config), config.rate
+
+
 
     

@@ -2,3 +2,5 @@
 .idea/
 *.pyc
 *.txt
+*.pdf
+config.yaml
