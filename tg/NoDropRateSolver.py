@@ -3,13 +3,13 @@ import math
 
 class NoDropRateSolver:
     
-    DATA_SEPARATOR = ";"
+#    DATA_SEPARATOR = ";"
     
-    @staticmethod
-    def buildResultFormat(nl=""):
-        res_format_line = "{{0:f}}{sep}{{1:f}}{end}".format(
-            sep=NoDropRateSolver.DATA_SEPARATOR, end=nl)
-        return res_format_line
+#     @staticmethod
+#     def buildResultFormat(nl=""):
+#         res_format_line = "{{0:f}}{sep}{{1:f}}{end}".format(
+#             sep=NoDropRateSolver.DATA_SEPARATOR, end=nl)
+#         return res_format_line
     
     def __init__(self, startingTxRate, epsilon, dlTreshold, experimentFactory):
         self.delRatioLowerBound = 0
