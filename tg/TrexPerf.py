@@ -95,7 +95,7 @@ class TrexPerfDriver():
         output = None
         
         #Requested tx rate is always the same for every run in the experiment.
-        txRate = -1
+        txRate = None
         
         # We create a numpy array in order to store checked and validate data
         dlRuns = np.array([])
@@ -138,7 +138,7 @@ class TrexPerfDriver():
                 # We set the requested tx rate only the first time (using the first
                 # run in the experiment; following runs will have the same 
                 # requested tx rate.
-                if txRate < 0:
+                if txRate is None:
                     txRate = run.getRequestedTxRate()
         
         # End of for
@@ -222,7 +222,7 @@ class TrexExperimentFactory(ExperimentFactory):
 if __name__ == '__main__':
     factory = TrexExperimentFactory('127.0.0.1', 0, 1, 
                                     'pcap/raw-pcap-files/plain-ipv6-64.pcap', 
-                                    5, 10)
+                                    1, 5)
     print ('Running ...')
     
     experiment = factory.build('1000000')

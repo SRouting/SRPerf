@@ -16,6 +16,9 @@ def parseInterval(arg):
     # Token T   := <VALUE> | <VALUE>:INTERVAL
     # INTERVAL  := VALUE:VALUE
     # VALUE     := [0-9\.]+
+    #
+    # NOTE: We don't mind (for now) if the number is correct, i.e: 
+    # xx.xx is legal, and also xx.xx.xx.
     p = re.compile(
         '^(?P<start>[0-9\.]+)(?:[\:](?P<step>[0-9\.]+)[\:](?P<stop>[0-9\.]+)){0,1}$'
     )
