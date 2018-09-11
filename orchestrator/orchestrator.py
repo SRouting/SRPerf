@@ -3,6 +3,8 @@
 import sys
 import json
 
+from optparse import OptionParser
+
 # We need to add tg modules
 sys.path.insert(0, "../tg")
 
@@ -31,13 +33,13 @@ class Orchestrator(object):
 
   # Run a defined experiment using the config provided as input
   @staticmethod
-  def run():
+  def run(node_type='linux'):
     # Init steps
     results = {}
     # Establish the connection with the sut
     cfg_manager = SshNode(host=SUT, name=SUT_NAME, username=SUT_USER)
     # Move to the sut home
-    cfg_manager.run_command("cd %s" %(SUT_HOME))
+    cfg_manager.run_command("cd %s/%s" %(SUT_HOME, node_type))
     # Let's parse the test plan
     parser = ConfigParser(CONFIG_FILE)
     # Run the experiments according to the test plan:
@@ -49,7 +51,7 @@ class Orchestrator(object):
       # Run the experiments
       values = rate_to_evaluate.run(config)
       # Collect the results
-      results[config.experiment] = values
+      results['%s-%s' %(config.experiment, config.rate)] = values
     # Finally dump the results on a file and return them
     Orchestrator.dump(results)
     return results
@@ -71,6 +73,21 @@ class Orchestrator(object):
     with open(RESULTS_FILE, 'w') as file:
      file.write(json.dumps(results))
 
+def parse_cmdline():
+  # Init cmd line parse
+  parser = OptionParser()
+  parser.add_option("-t", "--type", dest="type", type="string",
+    default="linux", help="Node type {linux|vpp}")
+  # Parse input parameters
+  (options, args) = parser.parse_args()
+  # Allowed values
+  types = ['linux', 'vpp']
+  if options.type not in types:
+    print "Type %s Not Supported Yet" % options.type
+    sys.exit(-1)
+  return options.type
+
 if __name__ == '__main__':
-  results = Orchestrator.run()
+  option_type = parse_cmdline()
+  results = Orchestrator.run(option_type)
   print results
