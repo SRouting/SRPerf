@@ -11,14 +11,16 @@ class NoDropRateSolver:
 #             sep=NoDropRateSolver.DATA_SEPARATOR, end=nl)
 #         return res_format_line
     
-    def __init__(self, startingTxRate, epsilon, dlTreshold, experimentFactory):
+    def __init__(self, startingTxRate, epsilon, dlTreshold, lineRate, 
+                 experimentFactory):
         self.delRatioLowerBound = 0
         self.rateLowerBound = startingTxRate
         self.delRatioUpperBound = 0
         self.rateUpperBound = self.rateLowerBound
         
-        self.eps = epsilon
+        self.eps = epsilon 
         self.dlTreshold = dlTreshold
+        self.lineRate = lineRate
         self.experimentFactory = experimentFactory
         
         self.incFactor = 2
@@ -44,17 +46,41 @@ class NoDropRateSolver:
         while(not stop):
             curRate = curRate * self.incFactor
             
+            # Patch - we want to be sure that current rate should not overcome
+            # the line rate. 
+            if (curRate > self.lineRate):
+                # Notice: this patch could break the exponential search invariant.
+                # Invariant: on expSearch() exit we have:
+                #     searching window [lowerRate, upperRate], 
+                #          DL(lowerRate) >= threshold AND DL(upperRate) < threshold.
+                #
+                # This patch could break the invariant. Indeed, let's suppose
+                # that the lineRate has DL(lineRate) >= threshold.
+                # Now the upper bound searching window is set to [lowerRate, lineRate] but
+                # the invariant does not hold anymore.
+                # Anyway, the solver should continue to work even if the invariant
+                # is broken because of expSearch() will exit as soon as
+                # the curRate is set with the lineRate. For the logSearch() the
+                # termination is guaranteed by the fact that, for each iteration
+                # the size of the window is halved and the lowerbound (lowerRate) 
+                # of the searching window has a DL(lowerRate) >= threshold.
+                # 
+                curRate = self.lineRate
+                self.rateUpperBound = curRate
+                stop = True
+            
             # We run the experiment using the given curRate value.
             output = self.buildAndRunExperiment(curRate)
             curDelRatio = output.getAverageDL()
             
-            if (curDelRatio < self.dlTreshold):
-                self.rateUpperBound = curRate
-                self.delRatioUpperBound = curDelRatio
-                stop = True
-            else:
-                self.rateLowerBound = curRate
-                self.delRatioLowerBound = curDelRatio
+            if (not stop):
+                if (curDelRatio < self.dlTreshold):
+                    self.rateUpperBound = curRate
+                    self.delRatioUpperBound = curDelRatio
+                    stop = True
+                else:
+                    self.rateLowerBound = curRate
+                    self.delRatioLowerBound = curDelRatio
             
             # We create a tuple that collects relevant data for this iteration
             tuple = (self.rateLowerBound, self.delRatioLowerBound, 
