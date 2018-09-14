@@ -18,7 +18,7 @@ LINE_RATES = {
   'end_x':6868000,
   'end_t':None,
   'end_b6':None,
-  'end_b6':None,
+  'end_b6_encaps':None,
   'end_dx6':6868000,
   'end_dx4':6868000,
   'end_dx2':6377000,
