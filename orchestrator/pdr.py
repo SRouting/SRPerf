@@ -39,10 +39,10 @@ class PDR(object):
     for iteration in range(0, config.run):
       print "PDR %s-%s Run %s" %(config.type, config.experiment, iteration)
       # At first we create the experiment factory with the right parameters
-      factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT, "%s/%s.pcap" %(PCAP_HOME, ConfigParser.get_packet(config)),
-                                      SAMPLES, DURATION)
+      factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT, "%s/%s.pcap" %(PCAP_HOME,
+                                      ConfigParser.get_packet(config)), SAMPLES, DURATION)
       # Then we instantiate the NDR solver with the above defined parameters
-      ndr = NoDropRateSolver(STARTING_TX_RATE, NDR_WINDOW, LB_DLR, factory)
+      ndr = NoDropRateSolver(STARTING_TX_RATE, NDR_WINDOW, LB_DLR, config.line_rate, factory)
       ndr.solve()
       # Once finished let's collect the results
       results.append(ndr.getSW()[0])

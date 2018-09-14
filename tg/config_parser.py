@@ -6,8 +6,30 @@ import yaml
 
 from collections import namedtuple
 
+# Line rate mapping
+LINE_RATES = {
+  'ipv6':12253000,
+  'ipv4':12253000,
+  't_encaps_v6':12253000,
+  't_encaps_v4':12253000,
+  't_encaps_l2':None,
+  't_insert_v6':12253000,
+  'end':6868000,
+  'end_x':6868000,
+  'end_t':None,
+  'end_b6':None,
+  'end_b6':None,
+  'end_dx6':6868000,
+  'end_dx4':6868000,
+  'end_dx2':6377000,
+  'end_dt6':None,
+  'end_ad6':None,
+  'end_ad4':None,
+  'end_am':None
+}
+
 # Config utilities
-Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run"])
+Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run", "line_rate"])
 
 # Parser of the configuration
 class ConfigParser(object):
@@ -30,7 +52,8 @@ class ConfigParser(object):
       configs = yaml.load(f)
     for config in configs:
       self.configs.append(Config(type=config['type'], experiment=config['experiment'],
-                                  size=config['size'], rate=config['rate'], run=config['run']))
+                                  size=config['size'], rate=config['rate'], run=config['run'],
+                                  line_rate=LINE_RATES[config['experiment']]))
 
   # Configs getter
   def get_configs(self):
