@@ -32,10 +32,12 @@ SOURCE_FILES = {
 # Notice: such encoding allows us to encode in one element (avoiding another
 # dictionary) the behaviour, solver and also the source at once!
 LABELS_FILTER = [
-    'ipv4-pdr@VPP',
-    'ipv4-pdr@Linux',
-    'ipv6-pdr@VPP',
-    'ipv6-pdr@Linux',
+    't_encaps_v6-pdr@VPP',
+    't_encaps_v6-pdr@Linux',
+    't_encaps_v4-pdr@VPP',
+    't_encaps_v4-pdr@Linux',
+    't_insert_v6-pdr@VPP',
+    't_insert_v6-pdr@Linux',
 ]
 
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~ DATA INITIALIZATION ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -49,6 +51,7 @@ LABELS_MAPPING = {
   'ipv6': 'IPv6',
   'ipv4': 'IPv4',
   't_insert_v6': 'T.Insert',
+  't_encaps_v4' : 'T.Encap(V4)',
   't_encaps_v6': 'T.Encaps',
   't_encaps_l2': 'T.Encaps.L2',
   'end': 'End',
@@ -103,7 +106,7 @@ for item in LABELS_FILTER:
         print('Unrecognized source mapping {0}'.format(sourceName))
         sys.exit(1)
 
-    fwdNameWithSourceName = '{0} ({1})'.format(LABELS_MAPPING[fwd], sourceName)
+    fwdNameWithSourceName = '{0}\n({1})'.format(LABELS_MAPPING[fwd], sourceName)
     TICK.insert(LABELS_ORDER[item], fwdNameWithSourceName)
 
     # Results coming from the test is pps. Moreover, results coming from the 
@@ -118,7 +121,7 @@ for item in LABELS_FILTER:
 
 # ~~~~~~~~~~~~~~~~~~~ GRAPH INITIALIZATION AND SETTINGS ~~~~~~~~~~~~~~~~~~~~~~~~ 
 
-plt.rcParams['font.size'] = 6
+plt.rcParams['font.size'] = 4
 
 # Create figure
 fig = plt.figure(1, figsize=(3, 3))
