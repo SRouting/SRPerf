@@ -3,4 +3,4 @@
 *.pyc
 *.txt
 *.pdf
-config.yaml
+*.yaml
