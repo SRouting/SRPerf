@@ -2,6 +2,8 @@
 
 import sys
 import json
+import yaml
+import os
 
 from optparse import OptionParser
 
@@ -13,33 +15,70 @@ from pdr import PDR
 from mrr import MRR
 from ssh_node import SshNode
 
-# Sut node
-SUT = "c220g1-031126.wisc.cloudlab.us"
-# Sut home
-SUT_HOME = "/proj/superfluidity-PG0/linux-srv6-perf/sut"
+# Constants
+
 # Sut configurator
 SUT_CONFIGURATOR = "forwarding-behaviour.cfg"
-# Sut user
-SUT_USER = "pier"
-# Sut name
-SUT_NAME = "sut"
 # Config file
 CONFIG_FILE = "config.yaml"
-# Results file
-RESULTS_FILE = "results.txt"
+# Testbed file
+TESTBED_FILE = "testbed.yaml"
+# key used in the testbed file
+SUT_KEY = "sut"
+SUT_HOME_KEY = "sut_home"
+SUT_USER_KEY = "sut_user"
+SUT_NAME_KEY = "sut_name"
+FWD_ENGINE_KEY = "fwd"
+# Results files
+RESULTS_FILES = {
+    'linux' :   'Linux.txt',
+    'vpp'   :   'VPP.txt'
+}
+
+# Global variables
+
+# Sut node
+SUT = ""
+# Sut home
+SUT_HOME = ""
+# Sut user
+SUT_USER = ""
+# Sut name
+SUT_NAME = ""
+# FWD ending
+FWD_ENGINE = ""
+
+# If the testbed file does not exist - we do not continue
+if os.path.exists(TESTBED_FILE) == False:
+  print "Error Testbed File %s Not Found" % TESTBED_FILE
+  sys.exit(-2)
+
+# Parse function, load global variables from testbed file
+with open(TESTBED_FILE) as f:
+  configs = yaml.load(f)
+SUT = configs[SUT_KEY]
+SUT_HOME = configs[SUT_HOME_KEY]
+SUT_USER = configs[SUT_USER_KEY]
+SUT_NAME = configs[SUT_NAME_KEY]
+FWD_ENGINE = configs[FWD_ENGINE_KEY]
+
+# Check proper setup of the global variables
+if SUT == "" or SUT_HOME == "" or SUT_USER == "" or SUT_NAME == "" or FWD_ENGINE == "":
+  print "Check proper setup of the global variables"
+  sys.exit(0)
 
 # Manages the orchestration of the experiments
 class Orchestrator(object):
 
   # Run a defined experiment using the config provided as input
   @staticmethod
-  def run(node_type='linux'):
+  def run():
     # Init steps
     results = {}
     # Establish the connection with the sut
     cfg_manager = SshNode(host=SUT, name=SUT_NAME, username=SUT_USER)
     # Move to the sut home
-    cfg_manager.run_command("cd %s/%s" %(SUT_HOME, node_type))
+    cfg_manager.run_command("cd %s/%s" %(SUT_HOME, FWD_ENGINE))
     # Let's parse the test plan
     parser = ConfigParser(CONFIG_FILE)
     # Run the experiments according to the test plan:
@@ -70,24 +109,9 @@ class Orchestrator(object):
   # Dump the results on a file
   @staticmethod
   def dump(results):
-    with open(RESULTS_FILE, 'w') as file:
+    with open(RESULTS_FILES[FWD_ENGINE], 'w') as file:
      file.write(json.dumps(results))
 
-def parse_cmdline():
-  # Init cmd line parse
-  parser = OptionParser()
-  parser.add_option("-t", "--type", dest="type", type="string",
-    default="linux", help="Node type {linux|vpp}")
-  # Parse input parameters
-  (options, args) = parser.parse_args()
-  # Allowed values
-  types = ['linux', 'vpp']
-  if options.type not in types:
-    print "Type %s Not Supported Yet" % options.type
-    sys.exit(-1)
-  return options.type
-
 if __name__ == '__main__':
-  option_type = parse_cmdline()
-  results = Orchestrator.run(option_type)
+  results = Orchestrator.run()
   print results
