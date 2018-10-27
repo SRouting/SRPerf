@@ -29,7 +29,7 @@ class DeliveryRatioSampler:
             output = experiment.run()
             
             # It evaluates the rxRate using the DR
-            curDelRatio = output.getAverageDL()
+            curDelRatio = output.getAverageDR()
             rxRate = curDelRatio * curRate
             
             tuple = (curRate, rxRate, curDelRatio)

@@ -31,7 +31,7 @@ class ExperimentOutput():
         pass
     
     @abstractmethod
-    def getAverageDL(self):
+    def getAverageDR(self):
         pass
     
     @abstractmethod

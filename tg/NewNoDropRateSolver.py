@@ -12,10 +12,10 @@ class RateType(Enum):
 
 class NoDropRateSolver:
     
-    def __init__(self, minTxRate, maxTxRate, epsilon, dlThreshold, rateType,
+    def __init__(self, minTxRate, maxTxRate, epsilon, drThreshold, rateType,
                  experimentFactory):
         # We check the input parameters
-        self.checkAndSet(minTxRate, maxTxRate, epsilon, dlThreshold, rateType)
+        self.checkAndSet(minTxRate, maxTxRate, epsilon, drThreshold, rateType)
         if (experimentFactory is None):
             self.printAndDie('Experiment must be set.', 1)
         self.experimentFactory = experimentFactory
@@ -35,8 +35,8 @@ class NoDropRateSolver:
         sys.exit(exitCode)
         
     # We sanitize input parameters.
-    def checkAndSet(self, minTxRate, maxTxRate, epsilon, dlThreshold, rateType):
-        if (0 >= dlThreshold  or 1 < dlThreshold):
+    def checkAndSet(self, minTxRate, maxTxRate, epsilon, drThreshold, rateType):
+        if (0 >= drThreshold  or 1 < drThreshold):
             self.printAndDie("Threshold value is not valid.", 1)
         
         if (0 > minTxRate):
@@ -59,7 +59,7 @@ class NoDropRateSolver:
         self.rateUpperBound = maxTxRate
         self.rateType = rateType
         self.eps = epsilon 
-        self.dlThreshold = dlThreshold
+        self.dlThreshold = drThreshold
         
     def buildAndRunExperiment(self, txRate):
         # On the basis of the txRate type (aka PPS or PERCENTAGE) we have to
@@ -86,7 +86,7 @@ class NoDropRateSolver:
         # to continue.
         curRate = self.rateLowerBound
         output = self.buildAndRunExperiment(curRate)
-        self.delRatioLowerBound = output.getAverageDL()
+        self.delRatioLowerBound = output.getAverageDR()
         
         if (self.delRatioLowerBound < self.dlThreshold):
             print 'Invalid lower bound for the current searching window: DR is below the threshold.'
@@ -100,7 +100,7 @@ class NoDropRateSolver:
             else:
                 curRate = (self.rateUpperBound + self.rateLowerBound) / 2.0
                 output = self.buildAndRunExperiment(curRate)
-                curDelRatio = output.getAverageDL()
+                curDelRatio = output.getAverageDR()
                 
                 if (curDelRatio < self.dlThreshold):
                     self.rateUpperBound = curRate

@@ -22,7 +22,7 @@ class TrexPerfOutput(ExperimentOutput):
     def getRequestedTxRate(self):
         return self.output['requested_tx_rate']
     
-    def getAverageDL(self):
+    def getAverageDR(self):
         return self.output['dl_mean']
     
     def getStdDL(self):
@@ -233,7 +233,7 @@ if __name__ == '__main__':
     
     print('Requested Tx Rate {0}, Mean {1}, Std. {2}'.format(
                                                  output.getRequestedTxRate(), 
-                                                 output.getAverageDL(), 
+                                                 output.getAverageDR(), 
                                                  output.getStdDL()))
     
     print ('Completed ...')

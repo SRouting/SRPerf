@@ -71,7 +71,7 @@ class NoDropRateSolver:
             
             # We run the experiment using the given curRate value.
             output = self.buildAndRunExperiment(curRate)
-            curDelRatio = output.getAverageDL()
+            curDelRatio = output.getAverageDR()
             
             if (not stop):
                 if (curDelRatio < self.dlTreshold):
@@ -104,7 +104,7 @@ class NoDropRateSolver:
             else:
                 curRate = (self.rateUpperBound + self.rateLowerBound) / 2.0
                 output = self.buildAndRunExperiment(curRate)
-                curDelRatio = output.getAverageDL()
+                curDelRatio = output.getAverageDR()
                 
                 if (curDelRatio < self.dlTreshold):
                     self.rateUpperBound = curRate
@@ -165,7 +165,7 @@ class NoDropRateSolver:
 #         
 #         while(curRate < rateUpperBound):
 #             output = self.buildAndRunExperiment(curRate)
-#             curDelRatio = output.getAverageDL()
+#             curDelRatio = output.getAverageDR()
 #             
 #             self.linearResults.append((curRate, curDelRatio))
 #             
