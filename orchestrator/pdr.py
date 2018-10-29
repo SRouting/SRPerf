@@ -5,7 +5,7 @@ import sys
 # We need to add tg modules
 sys.path.insert(0, "../tg")
 
-from NoDropRateSolver import NoDropRateSolver
+from NoDropRateSolver import *
 from TrexPerf import TrexExperimentFactory
 from config_parser import ConfigParser
 
@@ -42,7 +42,8 @@ class PDR(object):
       factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT, "%s/%s.pcap" %(PCAP_HOME,
                                       ConfigParser.get_packet(config)), SAMPLES, DURATION)
       # Then we instantiate the NDR solver with the above defined parameters
-      ndr = NoDropRateSolver(STARTING_TX_RATE, NDR_WINDOW, LB_DLR, config.line_rate, factory)
+      ndr = NoDropRateSolver(STARTING_TX_RATE, config.line_rate, NDR_WINDOW, LB_DLR, 
+                             RateType.PPS, factory)
       ndr.solve()
       # Once finished let's collect the results
       results.append(ndr.getSW()[0])

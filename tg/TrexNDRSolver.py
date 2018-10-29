@@ -20,10 +20,14 @@ if __name__ == '__main__':
         # NoDropDelivey ratio
         # Parameters are:
         #
-        # 100000.0 starting tx rate
-        # 500.0 (in pps) width of NDR searching window (used in the log search and linear phase)
-        # 0.995 is the NDR
-        ndr = NoDropRateSolver(100000.0, 500.0, 0.995, 12253800, factory)
+        # 1) searching window lower bound
+        # 2) searching window upper bound
+        # 3) epsilon
+        # 4) threshold
+        # 5) rate type
+        # 6) experiment factory
+        ndr = NoDropRateSolver(1.0, 100.0, 1, 0.995, RateType.PERCENTAGE, 
+                               factory)
         ndr.solve()
         
         # If no SW has been found, it returns None; otherwise it returns a tuple,
