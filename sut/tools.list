@@ -1,0 +1,9 @@
+The list of tools needs to be installed on the Sut 
+1- ethtool (latest)
+2- iproute2 (min v4.14) 
+3- SR-tcpdump
+
+The list of required configuration 
+1- disable Hyper-threading (bios)
+2- disable irqbalance (sut.cfg)
+3- disable NIC offloading features (sut.cfg)
