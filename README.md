@@ -1,6 +1,6 @@
 # SRPerf
 
-SRPerf is a performance evaluation framework for software and hardware implementations of SRv6. It is designed following the network benchmarking guidelines defined in [RFC 2544](https://tools.ietf.org/html/rfc2544). 
+SRPerf is a performance evaluation framework for software and hardware implementations of SRv6. It is designed following the network benchmarking guidelines defined in [RFC 2544](https://tools.ietf.org/html/rfc2544). See SRPerf [home page](https://srouting.github.io/SRPerf/).
 
 ## Architecture ##
 The architecture of SRPerf is composed of two main building blocks: testbed and orchestrator as shown in the figure below. The testbed is composed of two nodes, the tester and the System Under Test (SUT).
@@ -9,7 +9,7 @@ The nodes have two network interfaces cards (NIC) each and are connected back-to
 
 Accordingly, the tester can easily perform all different kinds of throughput measurements as well as round-trip delay. 
 
-A full description of the framework can be found [here](http://netgroup.uniroma2.it/Stefano_Salsano/papers/18_srv6_perf_sr_sfc_workshop_2018.pdf). 
+A full description of the framework can be found [here](https://arxiv.org/pdf/2001.06182). 
 
 ![](./framework.png)
 

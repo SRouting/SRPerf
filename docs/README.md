@@ -7,7 +7,7 @@ SRPerf is an open source performance evaluation framework for software and hardw
 
 [We](#the-srperf-team) have developed SRPerf in the context of the [ROSE](https://netgroup.github.io/rose/) project.
 
-### SRPerf source code
+### SRPerf source code and technical documentation
 
 [https://github.com/SRouting/SRPerf](https://github.com/SRouting/SRPerf)
 
