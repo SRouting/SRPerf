@@ -40,6 +40,6 @@ if __name__ == '__main__':
         #                    function expSearch() and logSearch().
         sw = ndr.getSW()
         
-        print '---------- Result ------------'
-        print sw
-        print '---------- Result ------------'
+        print('---------- Result ------------')
+        print(sw)
+        print('---------- Result ------------')

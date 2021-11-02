@@ -54,7 +54,7 @@ class DeliveryRatioSampler:
                              format(tuple[0], tuple[1], tuple[2]))
             
         except IOError as e:
-            print "I/O error({0}): {1}".format(e.errno, e.strerror)
+            print("I/O error({0}): {1}".format(e.errno, e.strerror))
         else:
             writer.close()
         

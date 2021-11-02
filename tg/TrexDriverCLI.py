@@ -49,10 +49,10 @@ def main(argv=None):  # IGNORE:C0111
         ### handle keyboard interrupt ###
         return 0
     except Exception:
-        print '-' * 60
-        print "Exception in user code:"
+        print('-' * 60)
+        print("Exception in user code:")
         traceback.print_exc(file=sys.stdout)
-        print '-' * 60
+        print('-' * 60)
         return 2
 
 if __name__ == "__main__":

@@ -38,4 +38,4 @@ for key, results in data.iteritems():
   metrics[CI_95] = ci_95
   OUT[key] = metrics
 # dump the results
-print json.dumps(OUT)
+print(json.dumps(OUT))

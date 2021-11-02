@@ -37,7 +37,7 @@ class PDR(object):
     results = []
     # We collect run PDR values and we return them
     for iteration in range(0, config.run):
-      print "PDR %s-%s Run %s" %(config.type, config.experiment, iteration)
+      print("PDR %s-%s Run %s" %(config.type, config.experiment, iteration))
       # At first we create the experiment factory with the right parameters
       factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT, "%s/%s.pcap" %(PCAP_HOME,
                                       ConfigParser.get_packet(config)), SAMPLES, DURATION)

@@ -33,7 +33,7 @@ class NoDropRateSolver:
 
     # It prints a message and exits returning the specified code.
     def printAndDie(self, message, exitCode):
-        print '{0:s}'.format(message)
+        print('{0:s}'.format(message))
         sys.exit(exitCode)
 
     # It sanitizes input parameters.

@@ -42,7 +42,7 @@ class ConfigParser(object):
     self.configs = []
     # If the config file does not exist - we do not continue
     if os.path.exists(config_file) == False:
-        print "Error Config File %s Not Found" % config_file
+        print("Error Config File %s Not Found" % config_file)
         sys.exit(-2)
     self.parse_data(config_file)
 

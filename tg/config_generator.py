@@ -38,7 +38,7 @@ def generate_size(size="all"):
       {'size': 'max'}
     ]
   else:
-    print "Size %s Not Supported Yet" % size
+    print("Size %s Not Supported Yet" % size)
     sys.exit(-1)
   return configs
 
@@ -161,7 +161,7 @@ def generate():
   elif options.type == "all":
     generate_all(options.size)
   else:
-    print "Type %s Not Supported Yet" % options.type
+    print("Type %s Not Supported Yet" % options.type)
 
 if __name__ == "__main__":
   generate()

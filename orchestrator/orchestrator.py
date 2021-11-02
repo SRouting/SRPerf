@@ -50,7 +50,7 @@ FWD_ENGINE = ""
 
 # If the testbed file does not exist - we do not continue
 if os.path.exists(TESTBED_FILE) == False:
-  print "Error Testbed File %s Not Found" % TESTBED_FILE
+  print("Error Testbed File %s Not Found" % TESTBED_FILE)
   sys.exit(-2)
 
 # Parse function, load global variables from testbed file
@@ -64,7 +64,7 @@ FWD_ENGINE = configs[FWD_ENGINE_KEY]
 
 # Check proper setup of the global variables
 if SUT == "" or SUT_HOME == "" or SUT_USER == "" or SUT_NAME == "" or FWD_ENGINE == "":
-  print "Check proper setup of the global variables"
+  print("Check proper setup of the global variables")
   sys.exit(0)
 
 # Manages the orchestration of the experiments
@@ -103,7 +103,7 @@ class Orchestrator(object):
     elif rate == "mrr":
       return MRR
     else:
-      print "Rate %s Not Supported Yet" % rate
+      print("Rate %s Not Supported Yet" % rate)
       sys.exit(-1)
 
   # Dump the results on a file
@@ -114,4 +114,4 @@ class Orchestrator(object):
 
 if __name__ == '__main__':
   results = Orchestrator.run()
-  print results
+  print(results)
