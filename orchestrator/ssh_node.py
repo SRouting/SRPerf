@@ -50,7 +50,7 @@ class SshNode(object):
     # Iterate until the stdout ends or the stop condition has been triggered
     while not u.search(buff) and self.stop == False:
       # Rcv from the channel the stdout
-      resp = self.chan.recv(1024)
+      resp = self.chan.recv(1024).decode('utf-8')
       # if it is a sudo command, send the password
       if re.search(".*\[sudo\].*", resp):
         self.chan.send("%s\r" % (self.passwd))
