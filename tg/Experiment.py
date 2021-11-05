@@ -1,6 +1,5 @@
 
 from abc import ABCMeta, abstractmethod
-from exceptions import Exception
 import six
 
 
