@@ -1,12 +1,11 @@
 
-from _pyio import __metaclass__
 from abc import ABCMeta, abstractmethod
 from exceptions import Exception
+import six
 
 
 # An Experiment must extends this class.
-class Experiment():
-    __metaclass__ = ABCMeta
+class Experiment(six.with_metaclass(ABCMeta)):
     
     # Implementing this function allows to define how an experiment
     # has to be invoked.
@@ -16,15 +15,13 @@ class Experiment():
 
 # Factory for Experiment.
 # Every Experiment should define its own factory method (and class).
-class ExperimentFactory():
-    __metaclass__ = ABCMeta
+class ExperimentFactory(six.with_metaclass(ABCMeta)):
     
     @abstractmethod
     def build(self, *args):
         pass
     
-class ExperimentOutput():
-    __metaclass__ = ABCMeta
+class ExperimentOutput(six.with_metaclass(ABCMeta)):
     
     @abstractmethod
     def getRequestedTxRate(self):
