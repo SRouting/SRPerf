@@ -8,9 +8,9 @@ from warnings import catch_warnings
 from time import sleep
 
 # get TRex APIs.
-sys.path.insert(0, "/opt/trex-core-2.41/scripts/automation/trex_control_plane/stl/")
+sys.path.insert(0, "/opt/trex-core-2.92/scripts/automation/trex_control_plane/interactive/")
 
-from trex_stl_lib.api import *
+from trex.stl.api import *
 
 class TrexOutput():
     
