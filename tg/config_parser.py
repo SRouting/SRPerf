@@ -25,11 +25,12 @@ LINE_RATES = {
   'end_dt6':6868000,
   'end_ad6':6868000,
   'end_ad4':6868000,
-  'end_am':6377000
+  'end_am':6377000,
+  'stamp': 6868130
 }
 
 # Config utilities
-Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run", "line_rate"])
+Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run", "line_rate", "streams"])
 
 # Parser of the configuration
 class ConfigParser(object):
@@ -53,7 +54,8 @@ class ConfigParser(object):
     for config in configs:
       self.configs.append(Config(type=config['type'], experiment=config['experiment'],
                                   size=config['size'], rate=config['rate'], run=config['run'],
-                                  line_rate=LINE_RATES[config['experiment']]))
+                                  line_rate=LINE_RATES[config['experiment']],
+                                  streams=config['streams']))
 
   # Configs getter
   def get_configs(self):
@@ -64,3 +66,8 @@ class ConfigParser(object):
   def get_packet(config):
     return "%s-%s-%s" %(config.type, config.experiment,
       ConfigParser.MAPPINGS[config.size])
+
+  # Streams getter
+  @staticmethod
+  def get_streams(config):
+    return config.streams

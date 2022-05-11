@@ -30,6 +30,7 @@ class NoDropRateSolver:
         # which is in this case 10
         self.step = self.eps / 10.0
         self.results = []
+        self.outputs = []
 
     # It prints a message and exits returning the specified code.
     def printAndDie(self, message, exitCode):
@@ -118,6 +119,8 @@ class NoDropRateSolver:
                          self.rateUpperBound, self.delRatioUpperBound,
                          curRate, curDelRatio, self.dlThreshold)
                 self.results.append(tuple)
+                self.outputs.append(output.toDictionary())
+
 
                 print('Log search [{0:f}/{1:f},{2:f}/{3:f}], '
                       '<probed:{4:f}/DR:{5:f}>, Threshold:{6:f}'.
@@ -149,3 +152,12 @@ class NoDropRateSolver:
             # element is the smallest searching window evaluated during the
             # log search.
             return self.results[-1]
+
+    def getRawOutput(self):
+        if 0 == len(self.outputs):
+            return None
+        else:
+            # We return the last element of the list. In this case the last
+            # element is the smallest searching window evaluated during the
+            # log search.
+            return self.outputs[-1]

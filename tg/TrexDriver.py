@@ -42,6 +42,10 @@ class TrexOutput():
         
         self.output['rx']['port'] = -1
         self.output['rx']['total_packets'] = -1
+
+        self.output['tx']['per_stream_packets'] = {}
+        self.output['rx']['per_stream_packets'] = {}
+
         self.output['warnings'] = None
         
     def setTxPort(self, txPort):
@@ -55,6 +59,12 @@ class TrexOutput():
         
     def setRxTotalPackets(self, tPackets):
         self.output['rx']['total_packets'] = tPackets
+
+    def setTxPerStreamPackets(self, pg_id, tPackets):
+        self.output['tx']['per_stream_packets'][pg_id] = tPackets
+
+    def setRxPerStreamPackets(self, pg_id, rPackets):
+        self.output['tx']['per_stream_packets'][pg_id] = rPackets
         
     def setTxDuration(self, duration):
         self.output['tx']['duration'] = duration
@@ -76,6 +86,12 @@ class TrexOutput():
         
     def getRxTotalPackets(self):
         return self.output['rx']['total_packets']
+
+    def getTxPerStreamPackets(self, pg_id):
+        return self.output['tx']['per_stream_packets'][pg_id]
+        
+    def getRxPerStreamPackets(self, pg_id):
+        return self.output['rx']['per_stream_packets'][pg_id]
     
     def getTxDuration(self):
         return self.output['tx']['duration']
@@ -106,6 +122,18 @@ class TrexDriver():
     # It creates a stream by leveraging the 'pcap' file which has been set 
     # during the driver creation.
     def __buildStreamsFromPcap(self):
+        if isinstance(self.pcap, list):
+            streams = []
+            for idx, pcap_info in enumerate(self.pcap):
+                streams.append(
+                    STLStream(
+                        packet=STLPktBuilder(pkt=pcap_info['pcap']),
+                        mode=STLTXCont(percentage=pcap_info['percentage']),
+                        flow_stats=STLFlowLatencyStats(pg_id=idx)
+                    )
+                )
+            return streams
+        else:
             return [STLStream(packet=STLPktBuilder(pkt=self.pcap),
                               mode=STLTXCont())]
     
@@ -165,8 +193,22 @@ class TrexDriver():
             txStats = client.get_xstats(self.txPort)
             rxStats = client.get_xstats(self.rxPort)
             
+            # We retrieve statistics per stream from Tx and Rx ports.
+            perStreamStats = client.get_pgid_stats()
+            
             tOutput.setTxTotalPackets(txStats['tx_total_packets'])
             tOutput.setRxTotalPackets(rxStats['rx_total_packets'])
+            
+            for pg_id, stats in perStreamStats.items():
+                if pg_id == 'global':
+                    # We skip global stats
+                    continue
+
+                txPkts = stats['tx_pkts']
+                rxPkts = stats['rx_pkts']
+
+                tOutput.setTxPerStreamPackets(pg_id, txPkts[self.txPort])
+                tOutput.setRxPerStreamPackets(pg_id, rxPkts[self.rxPort])
           
         except STLError as e:
             print(e)

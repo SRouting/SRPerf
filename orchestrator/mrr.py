@@ -45,4 +45,4 @@ class MRR(object):
       # Calculate mrr and then store in the array
       mrr = run.getRxTotalPackets() / DURATION
       results.append(mrr)
-    return results
+    return results, None
