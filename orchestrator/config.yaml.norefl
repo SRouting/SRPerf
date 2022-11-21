@@ -1,0 +1,60 @@
+- name: stamp-min-with-decap-norefl-100-0
+  experiment: stamp_reflector_scapy_with_decap_norefl
+  rate: pdr
+  run: 10
+  size: min
+  type: srv6
+  streams:
+    - experiment: data-encapsulated
+      size: min
+      type: srv6
+      percentage: 100
+    #- experiment: stamp-test
+    #  size: min
+    #  type: srv6
+    #  percentage: 0
+- name: stamp-min-with-encap-norefl-100-0
+  experiment: stamp_reflector_scapy_with_encap_norefl
+  rate: pdr
+  run: 10
+  size: min
+  type: srv6
+  streams:
+    - experiment: data
+      size: min
+      type: srv6
+      percentage: 100
+    #- experiment: stamp-test
+    #  size: min
+    #  type: srv6
+    #  percentage: 0
+- name: stamp-max-with-decap-norefl-100-0
+  experiment: stamp_reflector_scapy_with_decap_norefl_max
+  rate: pdr
+  run: 10
+  size: max
+  type: srv6
+  streams:
+    - experiment: data-encapsulated
+      size: max
+      type: srv6
+      percentage: 100
+    #- experiment: stamp-test
+    #  size: max
+    #  type: srv6
+    #  percentage: 0
+- name: stamp-max-with-encap-norefl-100-0
+  experiment: stamp_reflector_scapy_with_encap_norefl_max
+  rate: pdr
+  run: 10
+  size: max
+  type: srv6
+  streams:
+    - experiment: data
+      size: max
+      type: srv6
+      percentage: 100
+    #- experiment: stamp-test
+    #  size: max
+    #  type: srv6
+    #  percentage: 0

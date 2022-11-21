@@ -23,8 +23,9 @@ PCAP_HOME = "../pcap/trex-pcap-files"
 SAMPLES = 1
 # Starting tx rate
 STARTING_TX_RATE = 100000.0
+#STARTING_TX_RATE = 100.0
 # NDR window
-NDR_WINDOW = 500.0
+NDR_WINDOW = 50.0
 # Lower bound for delivery ratio
 LB_DLR = 0.995
 
@@ -57,7 +58,7 @@ class PDR(object):
       print("PDR %s-%s Run %s" %(config.type, config.experiment, iteration))
       # At first we create the experiment factory with the right parameters
       factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT,
-                                      PDR.get_packet(config)), SAMPLES, DURATION)
+                                      PDR.get_packet(config), SAMPLES, DURATION)
       # Then we instantiate the NDR solver with the above defined parameters
       ndr = NoDropRateSolver(STARTING_TX_RATE, config.line_rate, NDR_WINDOW, LB_DLR, 
                              RateType.PPS, factory)

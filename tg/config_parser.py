@@ -26,11 +26,20 @@ LINE_RATES = {
   'end_ad6':6868000,
   'end_ad4':6868000,
   'end_am':6377000,
-  'stamp': 6868130
+  'stamp_reflector_scapy_with_decap': 6868130,
+  'stamp_reflector_scapy_with_encap': 12254900,
+  # 'stamp_reflector_scapy_with_decap_max': 812743,
+  # 'stamp_reflector_scapy_with_encap_max': 857338,
+  'stamp_reflector_scapy_with_decap_max': 7352942,
+  'stamp_reflector_scapy_with_encap_max': 1900000,
+  'stamp_reflector_scapy_with_decap_norefl': 6868130,
+  'stamp_reflector_scapy_with_encap_norefl': 12254900,
+  'stamp_reflector_scapy_with_decap_norefl_max': 812743,
+  'stamp_reflector_scapy_with_encap_norefl_max': 857338
 }
 
 # Config utilities
-Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run", "line_rate", "streams"])
+Config = namedtuple("Config", ["type", "experiment", "size", "rate", "run", "line_rate", "streams", "name"])
 
 # Parser of the configuration
 class ConfigParser(object):
@@ -55,7 +64,7 @@ class ConfigParser(object):
       self.configs.append(Config(type=config['type'], experiment=config['experiment'],
                                   size=config['size'], rate=config['rate'], run=config['run'],
                                   line_rate=LINE_RATES[config['experiment']],
-                                  streams=config['streams']))
+                                  streams=config['streams'], name=config['name']))
 
   # Configs getter
   def get_configs(self):

@@ -87,12 +87,12 @@ class Orchestrator(object):
       rate_to_evaluate = Orchestrator.factory(config.rate)
       # Enforce the configuration
       experiment_name = config.name if config.name is not None else config.experiment
-      cfg_manager.run_command("sudo bash %s %s" %(SUT_CONFIGURATOR, experiment_name))
+      cfg_manager.run_command("sudo bash %s %s" %(SUT_CONFIGURATOR, config.experiment))
       # Run the experiments
       values, outputs = rate_to_evaluate.run(config)
       # Collect the results
       results['%s-%s' %(experiment_name, config.rate)] = values
-      results['%s-%s' %(experiment_name, config.rate)]['details'] = outputs
+      results['%s-%s-details' %(experiment_name, config.rate)] = outputs
     # Finally dump the results on a file and return them
     Orchestrator.dump(results)
     return results
