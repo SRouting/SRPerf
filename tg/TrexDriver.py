@@ -7,11 +7,17 @@ import math
 from warnings import catch_warnings
 from time import sleep
 
-import sys
-sys.path.append('/proj/superfluidity-PG0/carmine/srv6pm-delay-measurement/srv6_delay_measurement/commons/protos/srv6pm/gen_py')
-import grpc
-import stamp_sender_pb2
-import stamp_sender_pb2_grpc
+SRV6_DELAY_MONITORING_GEN_PY_PATH = '/opt/srv6pm-delay-measurement/srv6_delay_measurement/commons/protos/srv6pm/gen_py'
+SUT_GRPC_IP = 'c220g1-030805.wisc.cloudlab.us:12345'
+
+try:
+    import sys
+    sys.path.append(SRV6_DELAY_MONITORING_GEN_PY_PATH)
+    import grpc
+    import stamp_sender_pb2
+    import stamp_sender_pb2_grpc
+except ModuleNotFoundError:
+    pass
 
 # get TRex APIs.
 sys.path.insert(0, "/opt/trex-core-2.92/scripts/automation/trex_control_plane/interactive/")
@@ -183,7 +189,7 @@ class TrexDriver():
             sleep(1)
 
             try:
-                channel = grpc.insecure_channel('c220g1-030805.wisc.cloudlab.us:12345')
+                channel = grpc.insecure_channel(SUT_GRPC_IP)
                 stub = stamp_sender_pb2_grpc.STAMPSessionSenderServiceStub(channel)
                 stamp_results = stub.GetResultsCounter(stamp_sender_pb2.StampResultsCountersRequest(ssid=0))
                 num_pkts_counter = stamp_results.num_results
