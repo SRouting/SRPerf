@@ -145,7 +145,7 @@ def generate_stamp(write=True, size="all"):
   experiments = [
     {
         "name": "stamp-reflector-with-end_dt6-90-10",
-        "experiment": "stamp_reflector_scapy_with_end_dt6_cfg",
+        "experiment": "stamp_reflector_scapy_with_end_dt6",
         "rate": "pdr",
         "run": RUN,
         "type": "srv6",
@@ -157,7 +157,7 @@ def generate_stamp(write=True, size="all"):
                 "percentage": 90
             },
             {
-                "experiment": "stamp_reflector_test",
+                "experiment": "stamp_sender_test",
                 "type": "srv6",
                 "percentage": 10
             }
@@ -165,13 +165,33 @@ def generate_stamp(write=True, size="all"):
     },
     {
         "name": "stamp-reflector-with-t_insert_v6-90-10",
-        "experiment": "stamp_reflector_scapy_with_t_encaps_v6_cfg",
+        "experiment": "stamp_reflector_scapy_with_t_encaps_v6",
         "rate": "pdr",
         "run": RUN,
         "type": "srv6",
         "streams": [
             {
                 "experiment": "t_insert_v6",
+                "size": "min",
+                "type": "srv6",
+                "percentage": 90
+            },
+            {
+                "experiment": "stamp_sender_test",
+                "type": "srv6",
+                "percentage": 10
+            }
+        ]
+    },
+    {
+        "name": "stamp-collector-with-end_dt6-90-10",
+        "experiment": "stamp_sender_scapy_with_end_dt6",
+        "rate": "pdr",
+        "run": RUN,
+        "type": "srv6",
+        "streams": [
+            {
+                "experiment": "end_dt6",
                 "size": "min",
                 "type": "srv6",
                 "percentage": 90
@@ -184,28 +204,8 @@ def generate_stamp(write=True, size="all"):
         ]
     },
     {
-        "name": "stamp-collector-with-end_dt6-90-10",
-        "experiment": "stamp_sender_scapy_with_end_dt6_cfg",
-        "rate": "pdr",
-        "run": RUN,
-        "type": "srv6",
-        "streams": [
-            {
-                "experiment": "end_dt6",
-                "size": "min",
-                "type": "srv6",
-                "percentage": 90
-            },
-            {
-                "experiment": "stamp_sender_test",
-                "type": "srv6",
-                "percentage": 10
-            }
-        ]
-    },
-    {
         "name": "stamp-collector-with-t_insert_v6-90-10",
-        "experiment": "stamp_sender_scapy_with_t_encaps_v6_cfg",
+        "experiment": "stamp_sender_scapy_with_t_encaps_v6",
         "rate": "pdr",
         "run": RUN,
         "type": "srv6",
@@ -217,7 +217,7 @@ def generate_stamp(write=True, size="all"):
                 "percentage": 90
             },
             {
-                "experiment": "stamp_sender_test",
+                "experiment": "stamp_reflector_test",
                 "type": "srv6",
                 "percentage": 10
             }
