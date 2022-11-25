@@ -38,8 +38,11 @@ class PDR(object):
     streams = ConfigParser.get_streams(config)
     if streams is not None:
       for stream in streams:
-        packet = "%s-%s-%s" % (stream["type"], stream["experiment"],
-                               ConfigParser.MAPPINGS[stream["size"]])
+        if stream.get("size") is not None:
+          packet = "%s-%s-%s" % (stream["type"], stream["experiment"],
+                                ConfigParser.MAPPINGS[stream["size"]])
+        else:
+          packet = "%s-%s" % (stream["type"], stream["experiment"])
         ret.append({
           "pcap": "%s/%s.pcap" % (PCAP_HOME, packet),
           "percentage": stream["percentage"]
@@ -55,7 +58,10 @@ class PDR(object):
     outputs = []
     # We collect run PDR values and we return them
     for iteration in range(0, config.run):
-      print("PDR %s-%s Run %s" %(config.type, config.experiment, iteration))
+      if config.name is None:
+        print("PDR %s-%s Run %s" %(config.type, config.experiment, iteration))
+      else:
+        print("PDR %s Run %s" %(config.name, iteration))
       # At first we create the experiment factory with the right parameters
       factory = TrexExperimentFactory(TREX_SERVER, TX_PORT, RX_PORT,
                                       PDR.get_packet(config), SAMPLES, DURATION)

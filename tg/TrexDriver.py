@@ -7,6 +7,12 @@ import math
 from warnings import catch_warnings
 from time import sleep
 
+import sys
+sys.path.append('/proj/superfluidity-PG0/carmine/srv6pm-delay-measurement/srv6_delay_measurement/commons/protos/srv6pm/gen_py')
+import grpc
+import stamp_sender_pb2
+import stamp_sender_pb2_grpc
+
 # get TRex APIs.
 sys.path.insert(0, "/opt/trex-core-2.92/scripts/automation/trex_control_plane/interactive/")
 
@@ -43,9 +49,6 @@ class TrexOutput():
         self.output['rx']['port'] = -1
         self.output['rx']['total_packets'] = -1
 
-        self.output['tx']['per_stream_packets'] = {}
-        self.output['rx']['per_stream_packets'] = {}
-
         self.output['warnings'] = None
         
     def setTxPort(self, txPort):
@@ -59,12 +62,6 @@ class TrexOutput():
         
     def setRxTotalPackets(self, tPackets):
         self.output['rx']['total_packets'] = tPackets
-
-    def setTxPerStreamPackets(self, pg_id, tPackets):
-        self.output['tx']['per_stream_packets'][pg_id] = tPackets
-
-    def setRxPerStreamPackets(self, pg_id, rPackets):
-        self.output['rx']['per_stream_packets'][pg_id] = rPackets
         
     def setTxDuration(self, duration):
         self.output['tx']['duration'] = duration
@@ -86,12 +83,6 @@ class TrexOutput():
         
     def getRxTotalPackets(self):
         return self.output['rx']['total_packets']
-
-    def getTxPerStreamPackets(self, pg_id):
-        return self.output['tx']['per_stream_packets'][pg_id]
-        
-    def getRxPerStreamPackets(self, pg_id):
-        return self.output['rx']['per_stream_packets'][pg_id]
     
     def getTxDuration(self):
         return self.output['tx']['duration']
@@ -116,7 +107,7 @@ class TrexDriver():
         self.txPort = txPort
         self.rxPort = rxPort
         self.pcap = pcap
-        self.rate = rate;
+        self.rate = rate
         self.duration = duration
     
     # It creates a stream by leveraging the 'pcap' file which has been set 
@@ -128,24 +119,12 @@ class TrexDriver():
         if isinstance(self.pcap, list):
             streams = []
             for idx, pcap_info in enumerate(self.pcap):
-                #print(pcap_info['percentage'])
-                if pcap_info.get('disable_perstream_stats', False):
-                    streams.append(
-                        STLStream(
-                            packet=STLPktBuilder(pkt=pcap_info['pcap']),
-                            #mode=STLTXCont(percentage=pcap_info['percentage']),
-                            mode=STLTXCont(pps=mult*pcap_info['percentage']/100)
-                        )
+                streams.append(
+                    STLStream(
+                        packet=STLPktBuilder(pkt=pcap_info['pcap']),
+                        mode=STLTXCont(pps=pcap_info['percentage']/100)
                     )
-                else:
-                    streams.append(
-                        STLStream(
-                            packet=STLPktBuilder(pkt=pcap_info['pcap']),
-                            #mode=STLTXCont(percentage=pcap_info['percentage']),
-                            mode=STLTXCont(pps=mult*pcap_info['percentage']/100),
-                            flow_stats=STLFlowLatencyStats(pg_id=idx)
-                        )
-                    )
+                )
             return streams
         else:
             return [STLStream(packet=STLPktBuilder(pkt=self.pcap),
@@ -202,28 +181,25 @@ class TrexDriver():
             
             # We wait for a bit in order to let the counters be stable
             sleep(1)
+
+            try:
+                channel = grpc.insecure_channel('c220g1-030805.wisc.cloudlab.us:12345')
+                stub = stamp_sender_pb2_grpc.STAMPSessionSenderServiceStub(channel)
+                stamp_results = stub.GetResultsCounter(stamp_sender_pb2.StampResultsCountersRequest(ssid=0))
+                num_pkts_counter = stamp_results.num_results
+            except grpc.RpcError as err:
+                if err.code() == grpc.StatusCode.UNAVAILABLE:
+                    num_pkts_counter = 0
+                else:
+                    raise err
             
             # We retrieve statistics from Tx and Rx ports.
             txStats = client.get_xstats(self.txPort)
             rxStats = client.get_xstats(self.rxPort)
             
-            # We retrieve statistics per stream from Tx and Rx ports.
-            perStreamStats = client.get_pgid_stats()['flow_stats']
-            
             tOutput.setTxTotalPackets(txStats['tx_total_packets'])
-            tOutput.setRxTotalPackets(rxStats['rx_total_packets'])
-            
-            for pg_id, stats in perStreamStats.items():
-                if pg_id == 'global':
-                    # We skip global stats
-                    continue
+            tOutput.setRxTotalPackets(rxStats['rx_total_packets'] + num_pkts_counter)
 
-                txPkts = stats['tx_pkts']
-                rxPkts = stats['rx_pkts']
-
-                tOutput.setTxPerStreamPackets(pg_id, txPkts[self.txPort])
-                tOutput.setRxPerStreamPackets(pg_id, rxPkts[self.rxPort])
-          
         except STLError as e:
             print(e)
             sys.exit(1)

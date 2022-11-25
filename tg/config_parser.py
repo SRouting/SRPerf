@@ -26,16 +26,8 @@ LINE_RATES = {
   'end_ad6':6868000,
   'end_ad4':6868000,
   'end_am':6377000,
-  'stamp_reflector_scapy_with_decap': 6868130,
-  'stamp_reflector_scapy_with_encap': 12254900,
-  # 'stamp_reflector_scapy_with_decap_max': 812743,
-  # 'stamp_reflector_scapy_with_encap_max': 857338,
-  'stamp_reflector_scapy_with_decap_max': 7352942,
-  'stamp_reflector_scapy_with_encap_max': 1900000,
-  'stamp_reflector_scapy_with_decap_norefl': 6868130,
-  'stamp_reflector_scapy_with_encap_norefl': 12254900,
-  'stamp_reflector_scapy_with_decap_norefl_max': 812743,
-  'stamp_reflector_scapy_with_encap_norefl_max': 857338
+  'stamp_reflector_test': 8389262,
+  'stamp_sender_test': 8389262,
 }
 
 # Config utilities
@@ -59,12 +51,19 @@ class ConfigParser(object):
   # Parse Function, load lines from file and parses one by one
   def parse_data(self, config_file):
     with open(config_file) as f:
-      configs = yaml.load(f)
+      configs = yaml.safe_load(f)
     for config in configs:
+      if config.get('streams') is not None:
+        line_rate = 0
+        for stream in config['streams']:
+          line_rate += LINE_RATES[stream['experiment']] * stream['percentage'] / 100
+      else:
+        line_rate=LINE_RATES[config['experiment']]
       self.configs.append(Config(type=config['type'], experiment=config['experiment'],
                                   size=config['size'], rate=config['rate'], run=config['run'],
-                                  line_rate=LINE_RATES[config['experiment']],
-                                  streams=config['streams'], name=config['name']))
+                                  line_rate=line_rate,
+                                  streams=config['streams'] if 'streams' in config else None,
+                                  name=config['name'] if 'name' in config else None))
 
   # Configs getter
   def get_configs(self):

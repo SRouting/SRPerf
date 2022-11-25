@@ -55,7 +55,7 @@ if os.path.exists(TESTBED_FILE) == False:
 
 # Parse function, load global variables from testbed file
 with open(TESTBED_FILE) as f:
-  configs = yaml.load(f)
+  configs = yaml.safe_load(f)
 SUT = configs[SUT_KEY]
 SUT_HOME = configs[SUT_HOME_KEY]
 SUT_USER = configs[SUT_USER_KEY]

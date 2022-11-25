@@ -139,12 +139,104 @@ def generate_proxy(write=True, size="all"):
   # Write the PROXY configuration
   write_config(configs)
 
+# Generate config for STAMP tests
+def generate_stamp(write=True, size="all"):
+  # Define the experiments
+  experiments = [
+    {
+        "name": "stamp-reflector-with-end_dt6-90-10",
+        "experiment": "stamp_reflector_scapy_with_end_dt6_cfg",
+        "rate": "pdr",
+        "run": RUN,
+        "type": "srv6",
+        "streams": [
+            {
+                "experiment": "end_dt6",
+                "size": "min",
+                "type": "srv6",
+                "percentage": 90
+            },
+            {
+                "experiment": "stamp_reflector_test",
+                "type": "srv6",
+                "percentage": 10
+            }
+        ]
+    },
+    {
+        "name": "stamp-reflector-with-t_insert_v6-90-10",
+        "experiment": "stamp_reflector_scapy_with_t_encaps_v6_cfg",
+        "rate": "pdr",
+        "run": RUN,
+        "type": "srv6",
+        "streams": [
+            {
+                "experiment": "t_insert_v6",
+                "size": "min",
+                "type": "srv6",
+                "percentage": 90
+            },
+            {
+                "experiment": "stamp_reflector_test",
+                "type": "srv6",
+                "percentage": 10
+            }
+        ]
+    },
+    {
+        "name": "stamp-collector-with-end_dt6-90-10",
+        "experiment": "stamp_sender_scapy_with_end_dt6_cfg",
+        "rate": "pdr",
+        "run": RUN,
+        "type": "srv6",
+        "streams": [
+            {
+                "experiment": "end_dt6",
+                "size": "min",
+                "type": "srv6",
+                "percentage": 90
+            },
+            {
+                "experiment": "stamp_sender_test",
+                "type": "srv6",
+                "percentage": 10
+            }
+        ]
+    },
+    {
+        "name": "stamp-collector-with-t_insert_v6-90-10",
+        "experiment": "stamp_sender_scapy_with_t_encaps_v6_cfg",
+        "rate": "pdr",
+        "run": RUN,
+        "type": "srv6",
+        "streams": [
+            {
+                "experiment": "t_insert_v6",
+                "size": "min",
+                "type": "srv6",
+                "percentage": 90
+            },
+            {
+                "experiment": "stamp_sender_test",
+                "type": "srv6",
+                "percentage": 10
+            }
+        ]
+    },
+  ]
+  # Generate configs
+  configs = generate_configs(experiments, size)
+  if not write:
+    return configs
+  # Write the PLAIN configuration
+  write_config(configs)
+
 # Parse options
 def generate():
   # Init cmd line parse
   parser = OptionParser()
   parser.add_option("-t", "--type", dest="type", type="string",
-    default="plain", help="Test type {plain|transit|end|proxy|all}")
+    default="plain", help="Test type {plain|transit|end|proxy|stamp|all}")
   parser.add_option("-s", "--size", dest="size", type="string",
     default="all", help="Size type {max|min|all}")
   # Parse input parameters
@@ -158,6 +250,8 @@ def generate():
     generate_end(True, options.size)
   elif options.type == "proxy":
     generate_proxy(True, options.size)
+  elif options.type == "stamp":
+    generate_stamp(options.size)
   elif options.type == "all":
     generate_all(options.size)
   else:

@@ -1,0 +1,106 @@
+#- experiment: ipv6
+#  rate: pdr
+#  run: 1
+#  size: min
+#  type: plain
+- name: stamp-min-with-decap-90-10
+  experiment: stamp_reflector_scapy_with_decap
+  rate: pdr
+  run: 1
+  size: min
+  type: srv6
+  streams:
+    - experiment: end_dt6
+      size: min
+      type: srv6
+      percentage: 90
+    - experiment: stamp_reflector_test
+      type: srv6
+      percentage: 10
+# - name: stamp-min-with-decap-99-1
+#   experiment: stamp_reflector_scapy_with_decap
+#   rate: pdr
+#   run: 10
+#   size: min
+#   type: srv6
+#   streams:
+#     - experiment: data-encapsulated
+#       size: min
+#       type: srv6
+#       percentage: 99
+#     - experiment: stamp-test
+#       size: min
+#       type: srv6
+#       percentage: 1
+#       disable_perstream_stats: true
+# - name: stamp-min-with-decap-99.9-0.1
+#   experiment: stamp_reflector_scapy_with_decap
+#   rate: pdr
+#   run: 10
+#   size: min
+#   type: srv6
+#   streams:
+#     - experiment: data-encapsulated
+#       size: min
+#       type: srv6
+#       percentage: 99.9
+#     - experiment: stamp-test
+#       size: min
+#       type: srv6
+#       percentage: 0.1
+#       disable_perstream_stats: true
+# - name: stamp-min-with-decap-100-0
+#   experiment: stamp_reflector_scapy_with_decap
+#   rate: pdr
+#   run: 10
+#   size: min
+#   type: srv6
+#   streams:
+#     - experiment: data-encapsulated
+#       size: min
+#       type: srv6
+#       percentage: 100
+#     #- experiment: stamp-test
+#     #  size: min
+#     #  type: srv6
+#     #  percentage: 0
+# - name: stamp-min-with-decap-0-100
+#   experiment: stamp_reflector_scapy_with_decap
+#   rate: pdr
+#   run: 10
+#   size: min
+#   type: srv6
+#   streams:
+#     #- experiment: data-encapsulated
+#     #  size: min
+#     #  type: srv6
+#     #  percentage: 0
+#     - experiment: stamp-test
+#       size: min
+#       type: srv6
+#       percentage: 100
+#       disable_perstream_stats: true
+
+
+
+
+# # - experiment: ipv6
+# #   rate: pdr
+# #   run: 10
+# #   size: min
+# #   type: plain
+# # - experiment: ipv6
+# #   rate: mrr
+# #   run: 10
+# #   size: min
+# #   type: plain
+# # - experiment: ipv4
+# #   rate: pdr
+# #   run: 10
+# #   size: min
+# #   type: plain
+# # - experiment: ipv4
+# #   rate: mrr
+# #   run: 10
+# #   size: min
+# #   type: plain
