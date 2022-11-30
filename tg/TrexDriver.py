@@ -7,7 +7,16 @@ import math
 from warnings import catch_warnings
 from time import sleep
 
+# TrexDriver is used by TrexPerf to initialize a set of test parameters
+# driver = TrexDriver(self.server, self.txPort, self.rxPort, self.pcap, self.rate, self.duration)
+
+# used to add the folder with .proto files to the system path
 SRV6_DELAY_MONITORING_GEN_PY_PATH = '/opt/srv6pm-delay-measurement/srv6_delay_measurement/commons/protos/srv6pm/gen_py'
+
+# this is used to contact the SUT at the end of the experiment to ask for a counter of packets
+# that are correctly received and processed by the SUT but they are not supposed to be sent back to the TG
+# the TG sums up this counter to the number of packets received back from the SUT in order to evaluate the loss ratio:
+# loss_ratio = 1 - (packets_received_back + grpc_counter) / packets_trasmitted 
 SUT_GRPC_IP = 'c220g1-030805.wisc.cloudlab.us:12345'
 
 try:
@@ -118,6 +127,11 @@ class TrexDriver():
     
     # It creates a stream by leveraging the 'pcap' file which has been set 
     # during the driver creation.
+    # 'pcap' can be a path to a .pcap file 
+    # or a list of dictionaries (pcap, percentage)
+    # where pcap is the path to a .pcap file and percentage is the percentage of packets to be
+    # generated using that .pcap file
+    
     def __buildStreamsFromPcap(self, mult=None):
         mult = float(mult)
         if mult is None:
